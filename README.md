@@ -1,69 +1,40 @@
 # ledger-dev-build-plane
 
-`ledger-dev-build-plane` treats developer tools as a local verification problem. The Rust implementation is intentionally narrow, but the fixtures and notes make the behavior explicit.
+`ledger-dev-build-plane` is a Rust project in developer tools. Its focus is to build a Rust toolkit that studies build behavior through node-edge fixtures, with cycle and reachability reports and no production deployment claims.
 
-## Ledger Dev Build Plane Checkpoints
+## Why This Exists
 
-Treat the compact fixture as the contract and the extended examples as a scratchpad. The code should stay boring enough that a change in behavior is obvious from the test output.
+The project exists to keep a narrow engineering decision visible and testable. For this repo, that decision is how change width and review cost should influence a review result.
 
-## What This Is For
+## Ledger Dev Build Plane Review Notes
 
-This is not a wrapper around a service. It is a self-contained project that shows how the model behaves when demand, capacity, latency, risk, and weight move in different directions.
+The first comparison I would make is `change width` against `review cost` because it shows where the rule is most opinionated.
 
-## Project Layout
+## Capabilities
 
-- `src`: primary implementation
-- `tests`: verification harness
-- `fixtures`: compact golden scenarios
-- `examples`: expanded scenario set
-- `metadata`: project constants and verification metadata
-- `docs`: operations and extension notes
-- `scripts`: local verification and audit commands
-- `Cargo.toml`: Rust package metadata
+- `fixtures/domain_review.csv` adds cases for change width and diagnostic quality.
+- `metadata/domain-review.json` records the same cases in structured form.
+- `config/review-profile.json` captures the read order and the two review questions.
+- `examples/ledger-dev-build-walkthrough.md` walks through the case spread.
+- The Rust code includes a review path for `change width` and `review cost`.
+- `docs/field-notes.md` explains the strongest and weakest cases.
 
-## Useful Pieces
+## Implementation Shape
 
-- Includes extended examples for safe defaults, including `recovery` and `degraded`.
-- Documents repeatable output tradeoffs in `docs/operations.md`.
-- Runs locally with a single verification command and no external credentials.
-- Stores project constants and verification metadata in `metadata/project.json`.
-- Adds a repository audit script that checks structure before running the language verifier.
+The fixture data drives the tests. The code stays thin, while `metadata/domain-review.json` and `config/review-profile.json` explain what each case is meant to protect.
 
-## Architecture Notes
+The Rust addition stays small enough to inspect in one sitting.
 
-The core is a scoring model over demand, capacity, latency, risk, and weight. That keeps code shape, diagnostics, and safe defaults in one explicit decision path. The threshold is 175, with risk penalty 7, latency penalty 3, and weight bonus 4. The Rust code keeps ownership and data movement plain, which makes the tests useful for checking both behavior and API shape.
-
-## Tooling
-
-The only required setup is the local Rust toolchain. After cloning, stay in the repo root so fixture paths resolve correctly.
-
-## Case Study
-
-The examples are meant to be readable before they are exhaustive. They cover enough variation to show how latency and risk can pull a decision below the threshold.
-
-## Local Workflow
+## Local Usage
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
 ```
 
-This runs the language-level build or test path against the compact fixture set.
+## Verification
 
-## Quality Gate
+That command is also the regression path. It verifies the domain cases and catches mismatches between the CSV, metadata, and code.
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit.ps1
-```
+## Roadmap
 
-The audit command checks repository structure and README constraints before it delegates to the verifier.
-
-## Expansion Ideas
-
-- Add malformed input fixtures so the failure path is as visible as the happy path.
-- Split the scoring constants into a typed configuration object and validate it before use.
-- Add a comparison mode that shows how decisions change when one signal is adjusted.
-- Add one more developer tools fixture that focuses on a malformed or borderline input.
-
-## Scope
-
-The repository favors determinism over breadth. It does not pull live data, keep secrets, or depend on network access for verification.
+The repository is intentionally scoped to local checks. I would expand it by adding adversarial fixtures before adding features.

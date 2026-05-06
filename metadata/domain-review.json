@@ -1,0 +1,73 @@
+{
+  "repo": "ledger-dev-build-plane",
+  "language": "Rust",
+  "category": "Developer tools",
+  "goal": "Build a Rust toolkit that studies build behavior through node-edge fixtures, with cycle and reachability reports and no production deployment claims.",
+  "review_model": {
+    "terms": [
+      "change width",
+      "diagnostic quality",
+      "review cost",
+      "safe rewrite"
+    ],
+    "lanes": [
+      "ship",
+      "watch",
+      "hold"
+    ],
+    "score": "signal * 2 + slack + confidence - drag * 3",
+    "purpose": "surface the domain-specific cases that need the most careful review"
+  },
+  "cases": [
+    {
+      "name": "baseline",
+      "focus": "change width",
+      "signal": 62,
+      "slack": 23,
+      "drag": 13,
+      "confidence": 82,
+      "score": 190,
+      "lane": "ship"
+    },
+    {
+      "name": "stress",
+      "focus": "diagnostic quality",
+      "signal": 66,
+      "slack": 28,
+      "drag": 8,
+      "confidence": 79,
+      "score": 215,
+      "lane": "ship"
+    },
+    {
+      "name": "edge",
+      "focus": "review cost",
+      "signal": 48,
+      "slack": 38,
+      "drag": 29,
+      "confidence": 91,
+      "score": 138,
+      "lane": "watch"
+    },
+    {
+      "name": "recovery",
+      "focus": "safe rewrite",
+      "signal": 74,
+      "slack": 40,
+      "drag": 18,
+      "confidence": 81,
+      "score": 215,
+      "lane": "ship"
+    },
+    {
+      "name": "stale",
+      "focus": "change width",
+      "signal": 91,
+      "slack": 38,
+      "drag": 22,
+      "confidence": 66,
+      "score": 220,
+      "lane": "ship"
+    }
+  ]
+}
